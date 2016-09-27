@@ -27,7 +27,7 @@ void Merge(vector <Comparable> & A, vector <Comparable> & tmpArray ,int leftPos,
 
     while(leftPos <=leftEnd && rightPos <=rightEnd)
     {
-        if(A[leftPos]<= A[leftPos++])
+        if(A[leftPos]<= A[rightPos])
         {
             tmpArray[tmpPos++] = std::move(A[leftPos++]);
         }
