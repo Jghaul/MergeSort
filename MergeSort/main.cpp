@@ -17,35 +17,35 @@ double get_cpu_time() {
 	}
 	else { return 0; } // TODO: Handle error
 }
-template <class Etype>
-void Merge(vector <Etype> & A, Etype TmpArray[],int LeftPos, int RightPos, int RightEnd)
+template <typename Comparable>
+void Merge(vector <Comparable> & A, vector <Comparable> & tmpArray ,int leftPos, int rightPos, int rightEnd)
 {
-    int LeftEnd = RightPos-1;
-    int TmpPos = LeftPos;
-    int NumElements = RightEnd -LeftPos +1;
+    int leftEnd = rightPos-1;
+    int tmpPos = leftPos;
+    int numElements = rightEnd -leftPos +1;
 
 
-    while(LeftPos <=LeftEnd && RightPos <=RightEnd)
+    while(leftPos <=leftEnd && rightPos <=rightEnd)
     {
-        if(A[LeftPos]<= A[LeftPos++])
+        if(A[leftPos]<= A[leftPos++])
         {
-            TmpArray[TmpPos++] = A[LeftPos++];
+            tmpArray[tmpPos++] = std::move(A[leftPos++]);
         }
         else{
-            TmpArray[TmpPos++] = A[RightPos++];
+            tmpArray[tmpPos++] = std::move(A[rightPos++]);
         }
     }
-    while(LeftPos<=LeftEnd)
+    while(leftPos<=leftEnd)
     {
-        TmpArray[TmpPos++]=A[LeftPos++];
+        tmpArray[tmpPos++]=std::move(A[leftPos++]);
     }
-    while(RightPos<=RightEnd)
+    while(rightPos<=rightEnd)
     {
-        TmpArray[TmpPos++]=A[RightPos++];
+        tmpArray[tmpPos++]=std::move(A[rightPos++]);
     }
-    for(int i = 0;i<NumElements;i++, RightEnd--)
+    for(int i = 0;i<numElements;i++, --rightEnd)
     {
-        A[RightEnd]=TmpArray[RightEnd];
+        A[ rightEnd ] = std::move( tmpArray[ rightEnd ] );
     }
 
 
@@ -57,9 +57,9 @@ void Merge(vector <Etype> & A, Etype TmpArray[],int LeftPos, int RightPos, int R
 
 
 
-template <class Etype>
+template <typename Comparable>
 
-void MergeSort(vector <Etype> & A, Etype TmpArray[], int Left, int Right){
+void MergeSort(vector <Comparable> & A, vector <Comparable> &  TmpArray, int Left, int Right){
 
 if(Left<Right)
 {
@@ -73,25 +73,15 @@ if(Left<Right)
 
 }
 
-template <class Etype>
+template <typename Comparable>
 
-void MergeSort(vector <Etype> & A, int N)
+void MergeSort(vector <Comparable> & A)
 {
-    try{
-   Etype * TmpArray  = new Etype [N];
-    MergeSort(A, TmpArray, 0, N-1);
-    delete [] TmpArray;
 
-    }
-    catch(...)
-    {
-        cerr<< "out of memory!! Sort fails."<<endl;
-    }
+    vector<Comparable> tmpArray( A.size( ) );
+    MergeSort( A, tmpArray, 0, A.size( ) - 1 );
+
 }
-
-
-
-
 
 int main()
 {
@@ -115,7 +105,7 @@ wordCount++;
 
 double begin=get_cpu_time();
 int ASize = A.size();
-MergeSort(A, wordCount);
+MergeSort(A);
 double end = get_cpu_time();
 
 double elapsedSecs = end-begin;
